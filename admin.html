@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Seblak & Bakso Aci Bang Jayy</title>
+    <meta name="robots" content="noindex">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        skybrand: {
+                            50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc',
+                            400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7'
+                        },
+                        spicy: { 500: '#ef4444', 600: '#dc2626', 700: '#b91c1c' },
+                        chili: '#f97316'
+                    },
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body text-slate-800 min-h-screen">
+
+    <!-- LAYAR LOGIN -->
+    <div id="admin-login-screen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-slate-800 to-skybrand-600">
+        <div class="modal-pop bg-white rounded-3xl max-w-sm w-full p-6 sm:p-8 shadow-2xl border border-slate-100">
+            <div class="text-center mb-5">
+                <div class="w-14 h-14 bg-spicy-500/10 text-spicy-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <h1 class="text-xl font-bold font-heading text-slate-900">Login Admin</h1>
+                <p class="text-xs text-slate-500 mt-1">Seblak &amp; Bakso Aci Bang Jayy</p>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Username</label>
+                    <input type="text" id="admin-username" autocomplete="username" onkeydown="if(event.key==='Enter') submitAdminLogin()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-skybrand-500 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Password</label>
+                    <input type="password" id="admin-password" autocomplete="current-password" onkeydown="if(event.key==='Enter') submitAdminLogin()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-skybrand-500 text-sm">
+                </div>
+                <p id="admin-login-error" class="hidden text-xs font-semibold text-spicy-600"><i class="fa-solid fa-circle-exclamation"></i> Username atau password salah.</p>
+                <button onclick="submitAdminLogin()" class="w-full py-3 rounded-xl bg-gradient-to-r from-spicy-600 to-chili text-white font-bold text-sm shadow-lg shadow-spicy-500/20 hover:opacity-95 transition-all">
+                    Masuk
+                </button>
+                <a href="index.html" class="block text-center text-xs text-slate-400 hover:text-skybrand-600 pt-1"><i class="fa-solid fa-arrow-left"></i> Kembali ke toko</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- APLIKASI ADMIN -->
+    <div id="admin-app" class="hidden">
+        <header class="sticky top-0 z-40 bg-slate-900 text-white shadow-md">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="images/logo.jpg" alt="Logo" class="w-9 h-9 rounded-xl object-cover">
+                    <div class="leading-tight">
+                        <p class="font-heading font-bold text-sm">Panel Admin</p>
+                        <p class="text-[11px] text-slate-400">Seblak &amp; Bakso Aci Bang Jayy</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="index.html" target="_blank" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs sm:text-sm font-semibold flex items-center gap-2">
+                        <i class="fa-solid fa-store"></i> <span class="hidden sm:inline">Lihat Toko</span>
+                    </a>
+                    <button onclick="adminLogout()" class="px-3.5 py-2 rounded-xl bg-spicy-600 hover:bg-spicy-700 text-xs sm:text-sm font-semibold flex items-center gap-2">
+                        <i class="fa-solid fa-right-from-bracket"></i> <span class="hidden sm:inline">Keluar</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="mb-6">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading">Dashboard Admin</h2>
+                <p class="text-sm text-slate-500 mt-1">Kelola transaksi, status pesanan, daftar menu, dan stok.</p>
+            </div>
+
+            <!-- Ringkasan -->
+            <div id="admin-summary" class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8"></div>
+
+            <!-- Sub tab -->
+            <div class="flex gap-2 mb-5 border-b border-slate-200">
+                <button onclick="switchAdminTab('orders')" id="admin-sub-btn-orders" class="admin-sub-btn px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-all">
+                    <i class="fa-solid fa-table-list mr-1.5"></i> Tabel Transaksi
+                </button>
+                <button onclick="switchAdminTab('menu')" id="admin-sub-btn-menu" class="admin-sub-btn px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-all">
+                    <i class="fa-solid fa-utensils mr-1.5"></i> Kelola Menu
+                </button>
+                <button onclick="switchAdminTab('stock')" id="admin-sub-btn-stock" class="admin-sub-btn px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-all">
+                    <i class="fa-solid fa-boxes-stacked mr-1.5"></i> Stok
+                </button>
+            </div>
+
+            <!-- Sub: Transaksi -->
+            <div id="admin-sub-orders">
+                <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="text" id="tx-search" oninput="renderTransactionTable()" placeholder="Cari ID, nama, atau nomor WhatsApp..." class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-skybrand-500 text-sm">
+                    </div>
+                    <select id="tx-filter-status" onchange="renderTransactionTable()" class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-skybrand-500 text-sm">
+                        <option value="all">Semua Status</option>
+                        <option value="1">Diterima</option>
+                        <option value="2">Diproses</option>
+                        <option value="3">Siap / Diantar</option>
+                    </select>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-x-auto">
+                    <table class="data-table w-full text-sm">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>ID Pesanan</th>
+                                <th>Waktu</th>
+                                <th>Pemesan</th>
+                                <th>Tipe / Bayar</th>
+                                <th class="text-center">Item</th>
+                                <th class="text-right">Total</th>
+                                <th>Status</th>
+                                <th class="text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tx-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Sub: Kelola Menu -->
+            <div id="admin-sub-menu" class="hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-sm text-slate-500">Tambah, ubah, atau hapus menu yang tampil di katalog.</p>
+                    <button onclick="openMenuForm()" class="px-4 py-2.5 rounded-xl bg-skybrand-500 hover:bg-skybrand-600 text-white text-sm font-bold flex items-center gap-2 shadow-md shadow-skybrand-200">
+                        <i class="fa-solid fa-plus"></i> Tambah Menu
+                    </button>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-x-auto">
+                    <table class="data-table w-full text-sm">
+                        <thead>
+                            <tr>
+                                <th>Menu</th>
+                                <th>Kategori</th>
+                                <th class="text-right">Harga</th>
+                                <th class="text-center">Stok</th>
+                                <th class="text-center">Best Seller</th>
+                                <th class="text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-menu-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Sub: Stok -->
+            <div id="admin-sub-stock" class="hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-sm text-slate-500">Atur sisa stok dengan tombol - / + atau ketik angkanya.</p>
+                    <button onclick="resetStock()" class="text-xs text-slate-400 hover:text-spicy-600 underline">Reset stok ke awal</button>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-x-auto">
+                    <table class="data-table w-full text-sm">
+                        <thead>
+                            <tr>
+                                <th>Menu</th>
+                                <th>Kategori</th>
+                                <th>Status</th>
+                                <th class="text-right">Atur Stok</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stock-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        
+        </main>
+    </div>
+
+    <!-- MODAL DETAIL TRANSAKSI -->
+    <div id="order-detail-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" onclick="if(event.target===this) closeOrderDetail()">
+        <div class="modal-pop bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative border border-slate-100 my-auto">
+            <button onclick="closeOrderDetail()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div id="order-detail-content"></div>
+        </div>
+    </div>
+
+    <!-- MODAL FORM MENU (TAMBAH / EDIT) -->
+    <div id="menu-form-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="modal-pop bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative border border-slate-100 my-auto">
+            <button onclick="closeMenuForm()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h3 id="menu-form-title" class="text-xl font-bold font-heading text-slate-900 mb-5">Tambah Menu</h3>
+            <input type="hidden" id="mf-id">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                <div class="sm:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Menu</label>
+                    <input type="text" id="mf-name" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-skybrand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Kategori</label>
+                    <select id="mf-category" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-skybrand-500 bg-white">
+                        <option value="seblak">Seblak</option>
+                        <option value="baci">Bakso Aci</option>
+                        <option value="minuman">Minuman / Sampingan</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Harga (Rp)</label>
+                        <input type="number" min="0" id="mf-price" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-skybrand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Stok</label>
+                        <input type="number" min="0" id="mf-stock" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-skybrand-500">
+                    </div>
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Deskripsi</label>
+                    <textarea id="mf-desc" rows="2" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-skybrand-500"></textarea>
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Komposisi (pisahkan dengan koma)</label>
+                    <input type="text" id="mf-ingredients" placeholder="Kerupuk, Kwetiau, Telur, Kencur" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-skybrand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Porsi</label>
+                    <input type="text" id="mf-portion" placeholder="1 mangkuk (± 350 gr)" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-skybrand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Estimasi Penyajian</label>
+                    <input type="text" id="mf-prep" placeholder="10–15 menit" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-skybrand-500">
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Gambar</label>
+                    <div class="flex items-center gap-3">
+                        <img id="mf-image-preview" src="images/logo.jpg" alt="Preview" class="w-16 h-16 rounded-xl object-cover border border-slate-200 shrink-0">
+                        <div class="flex-1 space-y-2">
+                            <input type="file" id="mf-image-file" accept="image/*" onchange="handleMenuImageFile(this)" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-skybrand-100 file:text-skybrand-600 file:font-semibold">
+                            <input type="text" id="mf-image-url" oninput="previewMenuImageUrl(this.value)" placeholder="atau tempel URL gambar / images/nama.jpeg" class="w-full px-3 py-1.5 rounded-lg border border-slate-200 focus:outline-none focus:border-skybrand-500 text-xs">
+                        </div>
+                    </div>
+                </div>
+                <div class="sm:col-span-2 flex flex-wrap gap-x-6 gap-y-2">
+                    <label class="flex items-center gap-2 text-xs font-semibold text-slate-600 cursor-pointer">
+                        <input type="checkbox" id="mf-bestseller" class="w-4 h-4 accent-skybrand-500"> Tandai Best Seller
+                    </label>
+                    <label class="flex items-center gap-2 text-xs font-semibold text-slate-600 cursor-pointer">
+                        <input type="checkbox" id="mf-spicy" class="w-4 h-4 accent-skybrand-500"> Tersedia pilihan level pedas
+                    </label>
+                </div>
+            </div>
+            <div class="flex gap-2 mt-6">
+                <button onclick="closeMenuForm()" class="flex-1 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs uppercase tracking-wider">Batal</button>
+                <button onclick="saveMenuForm()" class="flex-1 py-3 rounded-xl bg-skybrand-500 hover:bg-skybrand-600 text-white font-bold text-xs uppercase tracking-wider">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

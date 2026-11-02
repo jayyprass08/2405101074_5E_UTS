@@ -1,0 +1,95 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8fafc;
+}
+
+h1, h2, h3, h4, .font-heading {
+    font-family: 'Poppins', sans-serif;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+    background: #bae6fd;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #38bdf8;
+}
+
+.badge-pulse {
+    animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes pulse-ring {
+    0% { transform: scale(0.95); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(0.95); }
+}
+
+#tab-home {
+    background:
+        linear-gradient(rgba(255,255,255,.80), rgba(255,255,255,.80)),
+        url("../images/background.jpg") center / cover fixed no-repeat;
+}
+.hero-bg {
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+}
+
+.status-step {
+    transition: transform .2s ease;
+}
+
+
+.menu-card {
+    cursor: pointer;
+}
+.menu-card:hover .menu-card-hint {
+    color: #0284c7;
+}
+
+
+.modal-pop {
+    animation: modal-pop .22s ease-out;
+}
+@keyframes modal-pop {
+    from { opacity: 0; transform: translateY(12px) scale(.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+
+.chip {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    color: #0284c7;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.spicy-pick {
+    padding: 8px 0;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+    background: #fff;
+    transition: all .15s ease;
+}
+.spicy-pick:hover {
+    border-color: #fca5a5;
+}
+.spicy-pick.active {
+    border-color: #ef4444;
+    background: #fef2f2;
+    color: #dc2626;
+}
